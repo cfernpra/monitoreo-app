@@ -40,11 +40,14 @@ export default {
   data() {
     return {
       drawer: false,
+      
       menuItems: [
-        { text: "Inicio", route: "/", icon: "mdi-home" },
-        { text: "Usuarios", route: "/users", icon: "mdi-account-group" },
-        { text: "Mapa", route: "/map", icon: "mdi-map" },
-      ],
+  { text: "Inicio", route: "/", icon: "mdi-home" },
+  { text: "Usuarios", route: "/users", icon: "mdi-account-group" },
+  { text: "Mapa", route: "/map", icon: "mdi-map" },
+  { text: "Gestión de Geo-Vallas", route: "/geofences", icon: "mdi-map-marker" }, // Nueva opción
+],
+
     };
   },
   methods: {
