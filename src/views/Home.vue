@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: "HomePage", // Cambiado a un nombre de varias palabras
+  name: "HomePage",
 };
 </script>

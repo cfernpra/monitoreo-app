@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Users from "../views/Users.vue";
-import GeoFenceMap from "../views/GeoFenceMap.vue"; // Asegúrate de que esta ruta sea correcta
+import GeoFenceMap from "../views/GeoFenceMap.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -10,7 +10,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

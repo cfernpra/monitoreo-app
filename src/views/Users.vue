@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1>Lista de Usuarios</h1>
+    <h1>Usuarios</h1>
     <ul>
-      <li v-for="user in users" :key="user.id">
+      <li v-for="(user, index) in users" :key="index">
         {{ user.name }} - [{{ user.latitude }}, {{ user.longitude }}]
       </li>
     </ul>
@@ -15,13 +15,15 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase";
 
 export default {
-  name: "UsersPage", // Cambiado a un nombre de varias palabras
+  name: "UsersPage",
   setup() {
     const users = ref([]);
+
     onMounted(() => {
       const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-        users.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        users.value = snapshot.docs.map((doc) => doc.data());
       });
+
       return () => unsubscribe();
     });
 
