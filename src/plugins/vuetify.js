@@ -1,5 +1,6 @@
 import { createVuetify } from "vuetify";
 import "vuetify/styles";
+import "@mdi/font/css/materialdesignicons.css"; // Importa los íconos de Material Design
 
 export default createVuetify({
   theme: {
@@ -15,5 +16,8 @@ export default createVuetify({
         },
       },
     },
+  },
+  icons: {
+    defaultSet: "mdi", // Especifica que se usen los íconos de Material Design
   },
 });

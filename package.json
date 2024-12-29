@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@geoman-io/leaflet-geoman-free": "^2.18.0",
-    "@mdi/font": "5.9.55",
+    "@mdi/font": "^5.9.55",
+    "@mdi/js": "^7.4.47",
     "core-js": "^3.8.3",
     "leaflet": "^1.9.4",
     "leaflet-draw": "https://github.com/Leaflet/Leaflet.draw/tarball/develop",

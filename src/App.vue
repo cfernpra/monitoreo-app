@@ -1,23 +1,34 @@
 <template>
   <v-app>
+    <!-- Barra superior -->
     <v-app-bar color="primary" dark>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <!-- Ícono de navegación para desplegar el menú lateral -->
+      <v-app-bar-nav-icon @click="drawer = !drawer">
+        <v-icon>mdi-menu</v-icon> <!-- Ícono de menú -->
+      </v-app-bar-nav-icon>
       <v-toolbar-title>Monitoreo en Tiempo Real</v-toolbar-title>
     </v-app-bar>
 
+    <!-- Menú lateral (Navigation Drawer) -->
     <v-navigation-drawer v-model="drawer" app>
       <v-list>
+        <!-- Elementos del menú -->
         <v-list-item
           v-for="item in menuItems"
           :key="item.text"
           @click="navigateTo(item.route)"
           class="menu-item"
         >
+          <!-- Íconos personalizados para cada elemento del menú -->
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
           <v-list-item-title>{{ item.text }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
+    <!-- Vista principal -->
     <v-main>
       <router-view />
     </v-main>
@@ -30,9 +41,9 @@ export default {
     return {
       drawer: false,
       menuItems: [
-        { text: "Inicio", route: "/" },
-        { text: "Usuarios", route: "/users" },
-        { text: "Mapa", route: "/map" },
+        { text: "Inicio", route: "/", icon: "mdi-home" },
+        { text: "Usuarios", route: "/users", icon: "mdi-account-group" },
+        { text: "Mapa", route: "/map", icon: "mdi-map" },
       ],
     };
   },
