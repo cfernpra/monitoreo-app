@@ -6,7 +6,7 @@
       <v-app-bar-nav-icon @click="drawer = !drawer">
         <v-icon>mdi-menu</v-icon> <!-- Ícono de menú -->
       </v-app-bar-nav-icon>
-      <v-toolbar-title>Monitoreo en Tiempo Real</v-toolbar-title>
+      <v-toolbar-title>Locator: real time monitoring</v-toolbar-title>
     </v-app-bar>
 
     <!-- Menú lateral (Navigation Drawer) -->
@@ -42,10 +42,10 @@ export default {
       drawer: false,
       
       menuItems: [
-  { text: "Inicio", route: "/", icon: "mdi-home" },
-  { text: "Usuarios", route: "/users", icon: "mdi-account-group" },
-  { text: "Mapa", route: "/map", icon: "mdi-map" },
-  { text: "Gestión de Geo-Vallas", route: "/geofences", icon: "mdi-map-marker" }, // Nueva opción
+  { text: "Home", route: "/", icon: "mdi-home" },
+  { text: "Users", route: "/users", icon: "mdi-account-group" },
+  { text: "Map", route: "/map", icon: "mdi-map" },
+  { text: "Geo-Fence managing", route: "/geofences", icon: "mdi-map-marker" }, // Nueva opción
 ],
 
     };

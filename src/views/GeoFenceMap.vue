@@ -83,35 +83,42 @@ export default {
       });
     },
     async saveGeoFence() {
-      if (!this.drawnItems || !this.drawnItems.getLayers().length) {
-        alert("No hay geo-vallas para guardar.");
-        return;
-      }
+  if (!this.drawnItems || !this.drawnItems.getLayers().length) {
+    alert("No hay geo-vallas para guardar.");
+    return;
+  }
 
-      const geoFenceData = this.drawnItems.toGeoJSON();
+  const geoFenceData = this.drawnItems.toGeoJSON();
 
-      const processedFeatures = geoFenceData.features.map((feature) => ({
-        ...feature,
-        geometry: {
-          ...feature.geometry,
-          coordinates: JSON.stringify(feature.geometry.coordinates),
-        },
-      }));
+  const processedFeatures = geoFenceData.features.map((feature) => {
+    if (feature.geometry.type === "Polygon") {
+      return {
+        type: "polygon",
+        coordinates: JSON.stringify(feature.geometry.coordinates[0]), // Convertir a cadena JSON
+      };
+    } else if (feature.geometry.type === "Circle") {
+      const [lng, lat] = feature.geometry.coordinates;
+      const radius = feature.properties.radius;
+      return {
+        type: "circle",
+        center: JSON.stringify([lat, lng]), // Convertir a cadena JSON
+        radius: radius,
+      };
+    }
+  });
 
-      try {
-        await addDoc(collection(db, "geoFences"), {
-          name: `Geo-valla ${new Date().toLocaleString()}`,
-          geoFence: {
-            type: geoFenceData.type,
-            features: processedFeatures,
-          },
-          createdAt: new Date(),
-        });
-        alert("Geo-valla guardada correctamente.");
-      } catch (error) {
-        console.error("Error al guardar la geo-valla:", error);
-      }
-    },
+  try {
+    await addDoc(collection(db, "geoFences"), {
+      name: `Geo-valla ${new Date().toLocaleString()}`,
+      geoFences: processedFeatures,
+      createdAt: new Date(),
+    });
+    alert("Geo-valla guardada correctamente.");
+  } catch (error) {
+    console.error("Error al guardar la geo-valla:", error);
+    alert("Error al guardar la geo-valla.");
+  }
+},
   },
   mounted() {
     this.initializeMap();
