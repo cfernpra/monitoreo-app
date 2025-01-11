@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Bienvenido al Proyecto</h1>
-    <p>Esta es la página de inicio.</p>
+    <h1>Wellcome to Locator</h1>
+    <p>This is home page.</p>
   </div>
 </template>
 

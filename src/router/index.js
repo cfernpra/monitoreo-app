@@ -5,10 +5,10 @@ import GeoFenceMap from "../views/GeoFenceMap.vue";
 import GeoFencesManagement from "../views/GeoFencesManagement.vue";
 
 const routes = [
-  { path: "/", name: "Inicio", component: Home },
-  { path: "/users", name: "Usuarios", component: Users },
-  { path: "/map", name: "Mapa", component: GeoFenceMap },
-  { path: "/geofences", name: "Gestión de Geo-Vallas", component: GeoFencesManagement },
+  { path: "/", name: "Home", component: Home },
+  { path: "/users", name: "Users", component: Users },
+  { path: "/map", name: "Map", component: GeoFenceMap },
+  { path: "/geofences", name: "Geo-Fance managing", component: GeoFencesManagement },
 ];
 
 const router = createRouter({
