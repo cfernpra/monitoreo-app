@@ -51,10 +51,13 @@
         onSnapshot(geoFencesCollection, (snapshot) => {
           this.geoFences = snapshot.docs.map((doc) => {
             const data = doc.data();
-            const coordinates = data.geoFence.features.map((feature) =>
-              JSON.parse(feature.geometry.coordinates)
-            );
-            return { id: doc.id, name: data.name, coordinates };
+            const features = data.geoFence.features.map((feature) => {
+              return {
+                coordinates: feature.geometry.coordinates,
+                radius: feature.properties.radius || 'No radius data'
+              };
+            });
+            return { id: doc.id, name: data.name, features };
           });
         });
       },
@@ -66,13 +69,15 @@
           console.error("Error al eliminar la geo-valla:", error);
           alert("No se pudo eliminar la geo-valla.");
         }
-      },
+      }
     },
     mounted() {
       this.fetchGeoFences();
     },
   };
   </script>
+  
+  
   
   <style scoped>
   .v-card {

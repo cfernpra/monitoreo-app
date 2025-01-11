@@ -10,8 +10,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
-
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 export default {
@@ -25,8 +24,6 @@ export default {
   },
   methods: {
     initializeMap() {
-      if (this.map) return;
-
       this.map = L.map("map").setView([40.4168, -3.7038], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -45,41 +42,17 @@ export default {
 
       this.map.on("pm:create", (e) => {
         this.drawnItems.addLayer(e.layer);
-      });
-
-      this.listenToUserLocations();
-    },
-    listenToUserLocations() {
-      const usersCollection = collection(db, "users");
-
-      onSnapshot(usersCollection, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          const userData = change.doc.data();
-          const userId = change.doc.id;
-          const { latitude, longitude, name } = userData;
-
-          if (change.type === "added" || change.type === "modified") {
-            if (this.userMarkers[userId]) {
-              this.userMarkers[userId].setLatLng([latitude, longitude]);
-            } else {
-              const marker = L.marker([latitude, longitude], {
-                icon: L.icon({
-                  iconUrl: "https://cdn-icons-png.flaticon.com/512/4870/4870928.png",
-                  iconSize: [32, 32],
-                  iconAnchor: [16, 32],
-                }),
-              }).addTo(this.map);
-
-              marker.bindTooltip(`Usuario: ${name}`).openTooltip();
-              this.userMarkers[userId] = marker;
+        if (e.layer instanceof L.Circle) {
+          const radius = e.layer.getRadius(); // Obtiene el radio del círculo
+          const { lat, lng } = e.layer.getLatLng(); // Obtiene las coordenadas del centro
+          e.layer.feature = { // Guarda propiedades directamente en la capa
+            properties: { radius },
+            geometry: {
+              type: "Point",
+              coordinates: [lng, lat] // Longitud antes de latitud para GeoJSON
             }
-          } else if (change.type === "removed") {
-            if (this.userMarkers[userId]) {
-              this.map.removeLayer(this.userMarkers[userId]);
-              delete this.userMarkers[userId];
-            }
-          }
-        });
+          };
+        }
       });
     },
     async saveGeoFence() {
@@ -89,22 +62,10 @@ export default {
       }
 
       const geoFenceData = this.drawnItems.toGeoJSON();
-
-      const processedFeatures = geoFenceData.features.map((feature) => ({
-        ...feature,
-        geometry: {
-          ...feature.geometry,
-          coordinates: JSON.stringify(feature.geometry.coordinates),
-        },
-      }));
-
       try {
         await addDoc(collection(db, "geoFences"), {
           name: `Geo-valla ${new Date().toLocaleString()}`,
-          geoFence: {
-            type: geoFenceData.type,
-            features: processedFeatures,
-          },
+          geoFence: geoFenceData,
           createdAt: new Date(),
         });
         alert("Geo-valla guardada correctamente.");
@@ -114,7 +75,9 @@ export default {
     },
   },
   mounted() {
-    this.initializeMap();
+    this.$nextTick(() => {
+      this.initializeMap();
+    });
   },
   beforeUnmount() {
     if (this.map) {
