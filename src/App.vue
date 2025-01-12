@@ -46,6 +46,8 @@ export default {
   { text: "Users", route: "/users", icon: "mdi-account-group" },
   { text: "Map", route: "/map", icon: "mdi-map" },
   { text: "Geo-Fence managing", route: "/geofences", icon: "mdi-map-marker" }, // Nueva opción
+  { text: "Alerts", route: "/alerts", icon: "mdi-bell-alert" } // Nueva opción
+
 ],
 
     };
