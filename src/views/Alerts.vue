@@ -1,59 +1,40 @@
 <template>
   <v-container>
-    <h1>System Alerts</h1>
-
-    <!-- Alerts summary -->
-    <v-row class="mb-4">
-      <v-col cols="12" sm="6">
-        <p>Total alerts: {{ totalAlerts }}</p>
-      </v-col>
-      <v-col cols="12" sm="6">
-        <v-btn color="primary" @click="fetchAlerts">Refresh alerts</v-btn>
+    <v-row>
+      <v-col cols="12">
+        <h2>Total Alerts: {{ totalAlerts }}</h2>
+        <v-simple-table>
+          <thead>
+            <tr>
+              <th style="width: 5%;">#</th>
+              <th style="width: 20%;">Date & Time</th>
+              <th style="width: 20%;">Latitude</th>
+              <th style="width: 20%;">Longitude</th>
+              <th style="width: 10%;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(alert, index) in alerts" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ alert.timestamp }}</td>
+              <td>{{ alert.latitude }}</td>
+              <td>{{ alert.longitude }}</td>
+              <td>
+                <v-btn color="success" @click="viewMap(alert.latitude, alert.longitude)">
+                  View Map
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </v-simple-table>
       </v-col>
     </v-row>
-
-    <!-- Alerts list -->
-    <v-simple-table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Date & Time</th>
-          <th>Latitude</th>
-          <th>Longitude</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(alert, index) in alerts" :key="index">
-          <td>{{ index + 1 }}</td>
-          <td>{{ alert.timestamp }}</td>
-          <td>{{ alert.latitude }}</td>
-          <td>{{ alert.longitude }}</td>
-          <td>
-            <v-btn color="success" @click="viewMap(alert)">View map</v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </v-simple-table>
-
-    <!-- Map modal -->
-    <v-dialog v-model="showMap" max-width="800px">
-      <v-card>
-        <v-card-title>Alert Location</v-card-title>
-        <v-card-text>
-          <div id="map" style="height: 400px;"></div>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="error" text @click="closeMap">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
-import { db } from "../firebase";
+import { db } from "@/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default {
@@ -61,50 +42,37 @@ export default {
   setup() {
     const alerts = ref([]);
     const totalAlerts = ref(0);
-    const showMap = ref(false);
-    const selectedAlert = ref(null);
 
     const fetchAlerts = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "alerts"));
-        const data = querySnapshot.docs.map((doc) => doc.data());
-
-        alerts.value = data;
-        totalAlerts.value = data.length;
-      } catch (error) {
-        console.error("Error fetching alerts:", error);
-      }
+      const querySnapshot = await getDocs(collection(db, "alerts"));
+      querySnapshot.forEach((doc) => {
+        alerts.value.push(doc.data());
+      });
+      totalAlerts.value = alerts.value.length;
     };
 
-    const viewMap = (alert) => {
-      selectedAlert.value = alert;
-      showMap.value = true;
-      // Initialize map here with Leaflet or Google Maps
-    };
-
-    const closeMap = () => {
-      showMap.value = false;
+    const viewMap = (latitude, longitude) => {
+      window.open(
+        `https://www.google.com/maps?q=${latitude},${longitude}`,
+        "_blank"
+      );
     };
 
     onMounted(() => {
       fetchAlerts();
     });
 
-    return {
-      alerts,
-      totalAlerts,
-      showMap,
-      viewMap,
-      closeMap,
-      fetchAlerts,
-    };
+    return { alerts, totalAlerts, viewMap };
   },
 };
 </script>
 
-<style scoped>
-#map {
-  width: 100%;
-  height: 400px;
+<style>
+/* Estilo personalizado para ajustar el espaciado de las columnas */
+.v-simple-table th,
+.v-simple-table td {
+  padding: 8px 12px; /* Más espacio interno para las celdas */
+  text-align: center; /* Centrar el contenido */
+  white-space: nowrap; /* Evitar que el texto se divida en varias líneas */
 }
 </style>
